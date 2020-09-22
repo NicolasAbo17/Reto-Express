@@ -5,14 +5,23 @@ ws.onmessage = (msg) => {
 };
 
 const renderMessages = (data) => {
-  const html = data.map((item) => `<p>${item}</p>`).join(" ");
-  document.getElementById("messages").innerHTML = html;
+  if (!data[0]["author"]) {
+    document.getElementById("err").innerHTML = `<h4> ${data}</h4>`;
+  } else {
+    const html = data
+      .map(
+        (message) => `<h4>${message.author}: </h4> <p>${message.message}</p>`
+      )
+      .join(" ");
+    document.getElementById("messages").innerHTML = html;
+  }
 };
 
 const handleSubmit = (evt) => {
   evt.preventDefault();
+  const author = document.getElementById("author");
   const message = document.getElementById("message");
-  ws.send(message.value);
+  ws.send(JSON.stringify({ author: author.value, message: message.value }));
   message.value = "";
 };
 
